@@ -2,31 +2,40 @@ name: Build X3SI
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Build with Free60 LibXenon
         run: |
+          docker pull free60/libxenon:latest
           docker run --rm \
             -v "$PWD:/app" \
             -w /app \
             free60/libxenon:latest \
-            sh -lc 'make DEVKITXENON=/usr/local/xenon'
+            sh -lc 'make clean && make DEVKITXENON=/usr/local/xenon'
 
-      - name: Verify output
+      - name: Verify ELF32
         run: |
-          file X3SI.elf32
           test -s X3SI.elf32
+          file X3SI.elf32
+          readelf -h X3SI.elf32 | grep -E 'Class:|Data:|Machine:'
 
-      - name: Upload ELF32
+      - name: Upload build
         uses: actions/upload-artifact@v4
         with:
-          name: X3SI-elf32
+          name: X3SI-build
           path: X3SI.elf32
+          if-no-files-found: error
+          retention-days: 14
