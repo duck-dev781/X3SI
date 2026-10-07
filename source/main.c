@@ -395,19 +395,27 @@ int main(void) {
     memset(&old, 0, sizeof(old));
     refresh_all();
 
+    draw();
+
     for (;;) {
-        draw();
         usb_do_poll();
         get_controller_data(&p, 0);
 
         if (p.logo && !old.logo) return 0;
-        if (p.a && !old.a) fahrenheit = !fahrenheit;
-        if (p.y && !old.y) refresh_all();
+        if (p.a && !old.a) {
+            fahrenheit = !fahrenheit;
+            draw();
+        }
+        if (p.y && !old.y) {
+            refresh_all();
+            draw();
+        }
         if (p.x && !old.x) {
             int r = save_report();
             console_clrscr();
             printf(r > 0 ? "Report saved successfully.\n" : (r < 0 ? "Could not save report.\n" : "Save cancelled.\n"));
             mdelay(900);
+            draw();
         }
         if (p.b && !old.b) return 0;
 
