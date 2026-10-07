@@ -13,7 +13,7 @@
 #include <diskio/ata.h>
 #include <xenon_smc/xenon_smc.h>
 #include <xb360/xb360.h>
-#include <xenon_sfcx/xenon_sfcx.h>
+#include <xenon_nand/xenon_sfcx.h>
 
 int bdev_enum(int handle, const char **name);
 
