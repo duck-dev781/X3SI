@@ -1,0 +1,32 @@
+name: Build X3SI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build with Free60 LibXenon
+        run: |
+          docker run --rm \
+            -v "$PWD:/app" \
+            -w /app \
+            free60/libxenon:latest \
+            sh -lc 'make DEVKITXENON=/usr/local/xenon'
+
+      - name: Verify output
+        run: |
+          file X3SI.elf32
+          test -s X3SI.elf32
+
+      - name: Upload ELF32
+        uses: actions/upload-artifact@v4
+        with:
+          name: X3SI-elf32
+          path: X3SI.elf32
