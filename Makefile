@@ -1,3 +1,6 @@
+#---------------------------------------------------------------------------------
+# X3SI Xbox 360 LibXenon build
+#---------------------------------------------------------------------------------
 .SUFFIXES:
 
 ifeq ($(strip $(DEVKITXENON)),)
@@ -56,11 +59,7 @@ else
 DEPENDS := $(OFILES:.o=.d)
 
 $(OUTPUT).elf32: $(OUTPUT).elf
-	$(OBJCOPY) -O elf32-powerpc $(OUTPUT).elf $(OUTPUT).elf32
-	$(STRIP) $(OUTPUT).elf32
-
 $(OUTPUT).elf: $(OFILES)
-	$(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
 
 -include $(DEPENDS)
 
