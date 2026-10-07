@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <time.h>
+#include <time/time.h>
 #include <sys/statvfs.h>
 
 #include <xenos/xenos.h>
@@ -362,7 +363,7 @@ static int choose_storage(void) {
         if (p.down && !old.down) { if (++selected >= storage_count) selected = 0; }
         if (p.a && !old.a) return selected;
         old = p;
-        mdelay(30);
+        udelay(30000);
     }
 }
 
@@ -386,7 +387,6 @@ int main(void) {
     struct controller_data_s p, old;
     xenos_init(VIDEO_MODE_AUTO);
     console_init();
-    xenon_make_it_faster(XENON_SPEED_FULL);
     usb_init();
     usb_do_poll();
     xenon_ata_init();
