@@ -16,10 +16,10 @@
 
 typedef volatile uint32_t fb_t;
 static fb_t *fb=(fb_t*)FB_BASE;
-extern const unsigned char _binary_assets_badavatar_png_start[];
-extern const unsigned char _binary_assets_badavatar_png_end[];
-extern const unsigned char _binary_assets_phoenix_png_start[];
-extern const unsigned char _binary_assets_phoenix_png_end[];
+extern const unsigned char _binary_badavatar_png_start[];
+extern const unsigned char _binary_badavatar_png_end[];
+extern const unsigned char _binary_phoenix_png_start[];
+extern const unsigned char _binary_phoenix_png_end[];
 
 static void clear(uint32_t c){for(int y=0;y<H;y++){fb_t*p=fb+y*W;for(int x=0;x<W;x++)p[x]=c;}}
 static void rect(int x,int y,int w,int h,uint32_t c){if(x<0){w+=x;x=0;}if(y<0){h+=y;y=0;}if(x+w>W)w=W-x;if(y+h>H)h=H-y;if(w<=0||h<=0)return;for(int j=0;j<h;j++){fb_t*p=fb+(y+j)*W+x;for(int i=0;i<w;i++)p[i]=c;}}
@@ -50,5 +50,5 @@ static void png_render(const unsigned char*start,const unsigned char*end,int dx,
 static const uint8_t font[27][7]={{14,17,17,31,17,17,17},{30,17,17,30,17,17,30},{14,17,16,16,16,17,14},{30,17,17,17,17,17,30},{31,16,16,30,16,16,31},{31,16,16,30,16,16,16},{14,17,16,23,17,17,14},{17,17,17,31,17,17,17},{14,4,4,4,4,4,14},{7,2,2,2,18,18,12},{17,18,20,24,20,18,17},{16,16,16,16,16,16,31},{17,27,21,21,17,17,17},{17,25,21,19,17,17,17},{14,17,17,17,17,17,14},{30,17,17,30,16,16,16},{14,17,17,17,21,18,13},{30,17,17,30,20,18,17},{15,16,16,14,1,1,30},{31,4,4,4,4,4,4},{17,17,17,17,17,17,14},{17,17,17,17,17,10,4},{17,17,17,21,21,21,10},{17,17,10,4,10,17,17},{17,17,10,4,4,4,4},{31,2,4,8,16,16,31},{0,0,0,0,0,0,0}};
 static void text(int x,int y,const char*s,int scale,uint32_t c){for(;*s;s++){char ch=*s;if(ch>='a'&&ch<='z')ch-=32;int idx=(ch>='A'&&ch<='Z')?ch-'A':26;for(int yy=0;yy<7;yy++)for(int xx=0;xx<5;xx++)if(font[idx][yy]&(1<<(4-xx)))rect(x+xx*scale,y+yy*scale,scale,scale,c);x+=6*scale;}}
 static void final_screen(void){clear(BLACK);circle(W/2,250,210,0xFF0A9CFF);circle(W/2,250,195,0xFF72FF00);xbox_icon(W/2-105,250,250);wrench_icon(W/2+15,185,120,WHITE);usb_icon(W/2+115,175,120);gear_icon(W/2+180,330,42,0xFFBFC4C7);text(310,470,"Chase's Dev Box",7,WHITE);}
-static void show(int which,int d){clear(BLACK);if(which==0)xbox_icon(W/2,H/2,280);else if(which==1)png_render(_binary_assets_badavatar_png_start,_binary_assets_badavatar_png_end,W/2-135,H/2-85,270,170);else if(which==2)chain_icon(W/2,H/2,260);else png_render(_binary_assets_phoenix_png_start,_binary_assets_phoenix_png_end,W/2-270,H/2-100,540,200);mdelay(d);}
+static void show(int which,int d){clear(BLACK);if(which==0)xbox_icon(W/2,H/2,280);else if(which==1)png_render(_binary_badavatar_png_start,_binary_badavatar_png_end,W/2-135,H/2-85,270,170);else if(which==2)chain_icon(W/2,H/2,260);else png_render(_binary_phoenix_png_start,_binary_phoenix_png_end,W/2-270,H/2-100,540,200);mdelay(d);}
 int main(void){xenos_init(VIDEO_MODE_HDMI_720P);for(int cycle=0;cycle<5;cycle++){int d=180-cycle*32;if(d<30)d=30;show(0,d);show(1,d);show(2,d);show(3,d);}for(int i=0;i<8;i++){clear((i&1)?BLACK:WHITE);for(int j=0;j<80;j++){int x=(j*137+i*71)%W,y=(j*83+i*43)%H;rect(x,y,4+(j%15),4+(j%9),(j&1)?RED:BLUE);}mdelay(35);}final_screen();mdelay(1800);return 0;}
