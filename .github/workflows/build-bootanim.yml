@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'BOOT SPLASH/**'
+      - 'BOOT_SPLASH/**'
       - '.github/workflows/build-bootanim.yml'
   workflow_dispatch:
 
@@ -22,18 +22,18 @@ jobs:
       - name: Build with Free60 LibXenon
         run: |
           docker pull free60/libxenon:latest
-          docker run --rm             -v "$PWD:/app"             -w /app             free60/libxenon:latest             sh -lc 'make -C "BOOT SPLASH" clean && make -C "BOOT SPLASH" DEVKITXENON=/usr/local/xenon'
+          docker run --rm             -v "$PWD:/app"             -w /app             free60/libxenon:latest             sh -lc 'make -C BOOT_SPLASH clean && make -C BOOT_SPLASH DEVKITXENON=/usr/local/xenon'
 
       - name: Verify ELF32
         run: |
-          test -s "BOOT SPLASH/ChasesDevBoxBoot.elf32"
-          file "BOOT SPLASH/ChasesDevBoxBoot.elf32"
-          readelf -h "BOOT SPLASH/ChasesDevBoxBoot.elf32" | grep -E 'Class:|Data:|Machine:'
+          test -s "BOOT_SPLASH/ChasesDevBoxBoot.elf32"
+          file "BOOT_SPLASH/ChasesDevBoxBoot.elf32"
+          readelf -h "BOOT_SPLASH/ChasesDevBoxBoot.elf32" | grep -E 'Class:|Data:|Machine:'
 
       - name: Upload boot splash
         uses: actions/upload-artifact@v4
         with:
           name: ChasesDevBoxBoot
-          path: "BOOT SPLASH/ChasesDevBoxBoot.elf32"
+          path: "BOOT_SPLASH/ChasesDevBoxBoot.elf32"
           if-no-files-found: error
           retention-days: 14
