@@ -1,0 +1,39 @@
+name: Build Chase's Dev Box Boot Animation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'bootanim/**'
+      - '.github/workflows/build-bootanim.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build with Free60 LibXenon
+        run: |
+          docker pull free60/libxenon:latest
+          docker run --rm             -v "$PWD:/app"             -w /app             free60/libxenon:latest             sh -lc 'make -C bootanim clean && make -C bootanim DEVKITXENON=/usr/local/xenon'
+
+      - name: Verify ELF32
+        run: |
+          test -s bootanim/ChasesDevBoxBoot.elf32
+          file bootanim/ChasesDevBoxBoot.elf32
+          readelf -h bootanim/ChasesDevBoxBoot.elf32 | grep -E 'Class:|Data:|Machine:'
+
+      - name: Upload boot animation
+        uses: actions/upload-artifact@v4
+        with:
+          name: ChasesDevBoxBoot
+          path: bootanim/ChasesDevBoxBoot.elf32
+          if-no-files-found: error
+          retention-days: 14
