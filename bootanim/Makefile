@@ -45,10 +45,10 @@ $(OUTPUT).elf32: $(OUTPUT).elf
 $(OUTPUT).elf: $(OFILES)
 
 badavatar.o: ../assets/badavatar.png
-	$(OBJCOPY) -I binary -O elf32-powerpc -B powerpc $< $@
+	cd ../assets && $(OBJCOPY) -I binary -O elf32-powerpc -B powerpc badavatar.png $(CURDIR)/badavatar.o
 
 phoenix.o: ../assets/phoenix.png
-	$(OBJCOPY) -I binary -O elf32-powerpc -B powerpc $< $@
+	cd ../assets && $(OBJCOPY) -I binary -O elf32-powerpc -B powerpc phoenix.png $(CURDIR)/phoenix.o
 
 -include $(DEPENDS)
 
